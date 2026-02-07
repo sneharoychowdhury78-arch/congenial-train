@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rose Rush: For My Monster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            max-width: 800px;
+            height: 100vh;
+            background:url('./bg_cottage.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            user-select: none;
+            touch-action: none;
+            margin: 0 auto;
+        }
+
+        /* Intro Screen */
+        #introScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, #FFC0E0 0%, #E8D4C0 100%);
+            z-index: 100;
+        }
+
+        #gameTitle {
+            font-size: 3em;
+            color: #FF96C8;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1.05;
+            -webkit-text-stroke: 2px #000;
+            text-stroke: 2px #000;
+            text-shadow:
+                0 0 30px rgba(255,150,200,0.35),
+                0 4px 10px rgba(0,0,0,0.45),
+                0 -2px 6px rgba(255,255,255,0.15);
+            animation: titlePop 2.4s ease-in-out infinite;
+        }
+
+        @keyframes titlePop {
+            0%,100% { transform: scale(1); text-shadow: 0 0 18px rgba(255,150,200,0.25), 0 4px 8px rgba(0,0,0,0.35); }
+            50% { transform: scale(1.04); text-shadow: 0 0 36px rgba(255,150,200,0.45), 0 6px 12px rgba(0,0,0,0.45); }
+        }
+
+        #readyText {
+            font-size: 1.8em;
+            color: #fff;
+            margin-bottom: 40px;
+            -webkit-text-stroke: 1.5px #000;
+            text-stroke: 1.5px #000;
+            text-shadow: 0 2px 8px rgba(230,80,140,0.7);
+            transform-origin: center;
+            animation: readyPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes readyPulse {
+            0%,100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-6px); opacity: 0.95; }
+        }
+
+        /* Fairy lights */
+        .fairy-lights {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 115;
+            overflow: visible;
+        }
+
+        .fairy-lights svg { width: 100%; height: 120px; display:block; }
+
+        .fairy-lights .bulb { filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35)); }
+        .fairy-lights .bulb circle { transition: opacity 0.3s ease; }
+        .fairy-lights .bulb:nth-child(1) circle { animation: twinkle 2.6s infinite ease-in-out; animation-delay: 0s; }
+        .fairy-lights .bulb:nth-child(2) circle { animation: twinkle 2.3s infinite ease-in-out; animation-delay: 0.2s; }
+        .fairy-lights .bulb:nth-child(3) circle { animation: twinkle 2.9s infinite ease-in-out; animation-delay: 0.4s; }
+        .fairy-lights .bulb:nth-child(4) circle { animation: twinkle 2.4s infinite ease-in-out; animation-delay: 0.1s; }
+        .fairy-lights .bulb:nth-child(5) circle { animation: twinkle 3.0s infinite ease-in-out; animation-delay: 0.35s; }
+        .fairy-lights .bulb:nth-child(6) circle { animation: twinkle 2.7s infinite ease-in-out; animation-delay: 0.15s; }
+
+        @keyframes twinkle {
+            0%,100% { opacity: 0.35; transform: translateY(0); }
+            45%,55% { opacity: 1; transform: translateY(-4px); }
+        }
+
+        /* Sparkles */
+        .intro-sparkles {
+            position: absolute;
+            top: 140px;
+            left: 0;
+            width: 100%;
+            height: 220px;
+            pointer-events: none;
+            z-index: 116;
+            overflow: hidden;
+        }
+
+        /* Background heart */
+        .intro-heart {
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+            font-size: 12em;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 101;
+            user-select: none;
+            animation: heartBeat 3s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.08); opacity: 0.15; }
+        }
+
+        /* Balloons */
+        .balloon {
+            position: absolute;
+            border-radius: 50% 50% 50% 0;
+            pointer-events: none;
+            opacity: 0.85;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+            animation: float-up 7s ease-in infinite;
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            background: rgba(0,0,0,0.1);
+            left: 50%;
+            top: 100%;
+            transform: translateX(-50%);
+        }
+
+        .balloon-red {
+            background: linear-gradient(135deg, #FF6B8A 0%, #E63C5C 100%);
+            width: 35px;
+            height: 45px;
+        }
+
+        .balloon-pink {
+            background: linear-gradient(135deg, #FFB6D9 0%, #FF96C8 100%);
+            width: 35px;
+            height: 45px;
+        }
+
+        .balloon-yellow {
+            background: linear-gradient(135deg, #FFE66D 0%, #FFD166 100%);
+            width: 35px;
+            height: 45px;
+        }
+
+        .balloon-purple {
+            background: linear-gradient(135deg, #E6B3FF 0%, #D99FFF 100%);
+            width: 35px;
+            height: 45px;
+        }
+
+        @keyframes float-up {
+            0% {
+                bottom: -60px;
+                opacity: 0.5;
+            }
+            10% {
+                opacity: 0.85;
+            }
+            90% {
+                opacity: 0.85;
+            }
+            100% {
+                bottom: 120vh;
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+        .intro-sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.6) 40%, rgba(230,150,200,0.05) 60%);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            filter: blur(0.6px);
+            animation: sparkleMove 3.2s linear infinite;
+        }
+
+        @keyframes sparkleMove {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            10% { opacity: 1; }
+            60% { transform: translateY(-30px) scale(1); opacity: 0.9; }
+            100% { transform: translateY(-80px) scale(0.5); opacity: 0; }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.3em;
+            font-family: 'Comic Sans MS', cursive;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.28), inset 0 -6px 12px rgba(0,0,0,0.06);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-yes {
+            background-color: #E6509C;
+            color: white;
+        }
+
+        .btn-yes:hover {
+            background-color: #D63A85;
+        }
+
+        .btn-yes {
+            box-shadow: 0 8px 28px rgba(230,80,140,0.25), 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-yes:active, .btn-yes:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 34px rgba(230,80,140,0.32); }
+
+        .btn-no {
+            background-color: #787878;
+            color: white;
+        }
+
+        .btn-no:hover {
+            background-color: #5a5a5a;
+        }
+
+        /* Guilt Screen */
+        #guiltScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, #FFC0E0 0%, #E8D4C0 100%);
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .guilt-text {
+            color: #f5f5f5;
+            text-shadow: 1px 1px 2px #000;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .guilt-button {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #E6509C;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .guilt-button:hover {
+            background-color: #D63A85;
+        }
+
+        /* Instructions Screen */
+        #instructionsScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #FFC0E0 0%, #E8D4C0 100%);
+            z-index: 100;
+        }
+
+        #instructionsTitle {
+            font-size: 2em;
+            color: #FF96C8;
+            text-shadow: 2px 2px 4px #000;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .instructions-content {
+            max-width: 600px;
+            color: #f5f5f5;
+            text-shadow: 1px 1px 2px #000;
+            font-size: 1em;
+            line-height: 1.8;
+        }
+
+        .instructions-content p {
+            margin-bottom: 15px;
+        }
+
+        .instructions-content .section-title {
+            color: #FFFF8C;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .start-hint {
+            margin-top: 40px;
+            font-size: 1.2em;
+            color: #FFE66D;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Game Screen */
+        #gameContainer {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background:url('./bg_cottage.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        .game-canvas {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #f5f5f5;
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px #000;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .hud-item {
+            margin-bottom: 8px;
+        }
+
+        .score-hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #f5f5f5;
+            font-size: 1.3em;
+            text-shadow: 1px 1px 2px #000;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .basket {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 24px;
+            background: linear-gradient(to bottom, #C8AA78, #503C28);
+            border: 2px solid #f5f5f5;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+
+        .falling-object {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .falling-object.flower {
+            background-image: url('rose.png');
+            width: 40px;
+            height: 40px;
+        }
+
+        .falling-object.bomb {
+            background-image: url('bomb.png');
+            width: 40px;
+            height: 40px;
+        }
+
+        .falling-object.girl {
+            background-image: url('doll.png');
+            width: 60px;
+            height: 60px;
+        }
+
+        .falling-object.snack {
+            background-image: url('heart_snack.png');
+            width: 40px;
+            height: 40px;
+        }
+
+        .snack-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 15;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        .snack-message p {
+            color: #E6509C;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+
+        /* End Screen */
+        #winScreen, #loseScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, #FFC0E0 0%, #E8D4C0 100%);
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .end-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px #000;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #winScreen .end-title {
+            color: #FF96C8;
+        }
+
+        #loseScreen .end-title {
+            color: #E63C5C;
+        }
+
+        .end-message {
+            font-size: 1.2em;
+            color: #f5f5f5;
+            text-shadow: 1px 1px 2px #000;
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .end-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-retry, .btn-quit {
+            padding: 15px 35px;
+            font-size: 1.2em;
+            font-family: 'Comic Sans MS', cursive;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-retry {
+            background-color: #E6509C;
+            color: white;
+        }
+
+        .btn-retry:hover {
+            background-color: #D63A85;
+        }
+
+        .btn-quit {
+            background-color: #787878;
+            color: white;
+        }
+
+        .btn-quit:hover {
+            background-color: #5a5a5a;
+        }
+
+        .bouquet {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5em;
+            z-index: 20;
+            animation: bounce 0.6s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -55%) scale(1.1);
+            }
+        }
+
+        @media (max-width: 800px) {
+            #gameTitle {
+                font-size: 2.2em;
+                -webkit-text-stroke: 1.5px #000;
+            }
+
+            #readyText {
+                font-size: 1.4em;
+                -webkit-text-stroke: 1px #000;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .hud {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.1em;
+            }
+
+            .intro-heart {
+                font-size: 8em;
+                right: 5px;
+            }
+
+            .fairy-lights {
+                height: 100px;
+            }
+
+            .fairy-lights svg {
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #gameTitle {
+                font-size: 1.6em;
+                -webkit-text-stroke: 1px #000;
+            }
+
+            #readyText {
+                font-size: 1.1em;
+                -webkit-text-stroke: 1px #000;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            .hud {
+                font-size: 0.9em;
+            }
+
+            .timer {
+                font-size: 1em;
+            }
+
+            .intro-heart {
+                font-size: 6em;
+                bottom: 20px;
+                right: 5px;
+            }
+
+            .fairy-lights {
+                height: 80px;
+            }
+
+            .fairy-lights svg {
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Intro Screen -->
+        <div id="introScreen">
+            <div class="fairy-lights" aria-hidden="true">
+                <svg viewBox="0 0 800 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="stringGrad" x1="0" x2="1">
+                            <stop offset="0" stop-color="#F8BBD0" stop-opacity="0.6"/>
+                            <stop offset="1" stop-color="#FFDDEB" stop-opacity="0.4"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,60 C150,20 300,100 450,60 C600,20 700,80 800,60" fill="none" stroke="url(#stringGrad)" stroke-width="2" opacity="0.9"/>
+                    <g class="bulb" transform="translate(30,50)">
+                        <circle cx="0" cy="0" r="7" fill="#FFD166"/>
+                    </g>
+                    <g class="bulb" transform="translate(90,65)">
+                        <circle cx="0" cy="0" r="7" fill="#FF6B8A"/>
+                    </g>
+                    <g class="bulb" transform="translate(150,45)">
+                        <circle cx="0" cy="0" r="7" fill="#8AE6C1"/>
+                    </g>
+                    <g class="bulb" transform="translate(210,75)">
+                        <circle cx="0" cy="0" r="7" fill="#FFD166"/>
+                    </g>
+                    <g class="bulb" transform="translate(270,50)">
+                        <circle cx="0" cy="0" r="7" fill="#FF6B8A"/>
+                    </g>
+                    <g class="bulb" transform="translate(330,70)">
+                        <circle cx="0" cy="0" r="7" fill="#8AE6C1"/>
+                    </g>
+                    <g class="bulb" transform="translate(390,55)">
+                        <circle cx="0" cy="0" r="7" fill="#FFD166"/>
+                    </g>
+                    <g class="bulb" transform="translate(450,45)">
+                        <circle cx="0" cy="0" r="7" fill="#FF6B8A"/>
+                    </g>
+                    <g class="bulb" transform="translate(510,68)">
+                        <circle cx="0" cy="0" r="7" fill="#8AE6C1"/>
+                    </g>
+                    <g class="bulb" transform="translate(570,52)">
+                        <circle cx="0" cy="0" r="7" fill="#FFD166"/>
+                    </g>
+                    <g class="bulb" transform="translate(630,72)">
+                        <circle cx="0" cy="0" r="7" fill="#FF6B8A"/>
+                    </g>
+                    <g class="bulb" transform="translate(690,48)">
+                        <circle cx="0" cy="0" r="7" fill="#8AE6C1"/>
+                    </g>
+                    <g class="bulb" transform="translate(750,65)">
+                        <circle cx="0" cy="0" r="7" fill="#FFD166"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="intro-heart" aria-hidden="true">❤️</div>
+
+            <div class="balloons" id="balloonsContainer"></div>
+
+            <div id="gameTitle">Rose Rush: For My Monster</div>
+            <div id="readyText">Ready to play?</div>
+            <div class="button-group">
+                <button class="btn btn-yes" id="yesBtn">Yes</button>
+                <button class="btn btn-no" id="noBtn">No</button>
+            </div>
+
+            <div class="intro-sparkles" aria-hidden="true"></div>
+        </div>
+
+        <!-- Guilt Screen -->
+        <div id="guiltScreen">
+            <div class="guilt-text">I took a whole week to make this for you,</div>
+            <div class="guilt-text">and you don't even want to try?? :(</div>
+            <div class="guilt-text">Are you that busy??</div>
+            <div class="guilt-text"></div>
+            <div class="guilt-text">Well, if you want to try press the button below:</div>
+            <button class="guilt-button">Thanks for trying baby, I love you</button>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructionsScreen">
+            <div id="instructionsTitle">How to Catch My Roses</div>
+            <div class="instructions-content">
+                <div class="section-title">🎮 Controls:</div>
+                <p>Slide your finger left or right to move the basket.</p>
+
+                <div class="section-title">🎯 Goals:</div>
+                <p>Catch 15 roses in 30 seconds.<br>Roses = love points.</p>
+
+                <div class="section-title">⚠️ Danger:</div>
+                <p><strong>Bomb</strong> = my roses explode, you lose.<br><strong>Doll</strong> = you picked her over me, jealous mode ON, you lose.</p>
+
+                <div class="section-title">✨ Special:</div>
+                <p>Glowing heart = you just caught my heart. Read the message carefully, it's all for you.</p>
+
+                <div class="start-hint">👉 Tap anywhere to start the game 👈</div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameContainer">
+            <div class="game-canvas">
+                <div class="hud">
+                    <div class="hud-item" id="timeDisplay">Time: 30s</div>
+                    <div class="hud-item" id="scoreDisplay">Roses: 0/15</div>
+                </div>
+                <div id="snackMessageContainer"></div>
+                <div class="basket" id="basket"></div>
+            </div>
+        </div>
+
+        <!-- Win Screen -->
+        <div id="winScreen">
+            <div class="bouquet">💐</div>
+            <div class="end-title">HAPPY ROSE DAY, MY LOVE!!</div>
+            <div class="end-message" id="winMessage"></div>
+            <div class="end-buttons">
+                <button class="btn-retry" id="retryBtn">Play Again</button>
+                <button class="btn-quit" id="quitBtn">Quit</button>
+            </div>
+        </div>
+
+        <!-- Lose Screen -->
+        <div id="loseScreen">
+            <div class="end-title" id="loseTitle"></div>
+            <div class="end-message" id="loseMessage"></div>
+            <div class="end-buttons">
+                <button class="btn-retry" id="retryLoseBtn">Try Again</button>
+                <button class="btn-quit" id="quitLoseBtn">Quit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Constants
+        let GAME_WIDTH = window.innerWidth;
+        let GAME_HEIGHT = window.innerHeight;
+        const BASKET_WIDTH = 110;
+        const BASKET_HEIGHT = 24;
+        const BASKET_SPEED = 15; // Increased from 7
+        const FLOWER_TARGET = 15;
+        const GAME_TIME = 30; // seconds
+        const SPAWN_INTERVAL = 700; // ms
+        const SNACK_MESSAGE_DURATION = 2000; // ms
+
+        // Object Types
+        const OBJECT_FLOWER = 'flower';
+        const OBJECT_BOMB = 'bomb';
+        const OBJECT_GIRL = 'girl';
+        const OBJECT_SNACK = 'snack';
+
+        // Game State
+        let gameState = 'intro';
+        let basket = null;
+        let fallingObjects = [];
+        let flowerscaught = 0;
+        let gameStartTime = null;
+        let spawnTimer = 0;
+        let gameRunning = false;
+        let touchStartX = 0;
+        let basketX = GAME_WIDTH / 2 - BASKET_WIDTH / 2;
+
+        // Get screen elements
+        const introScreen = document.getElementById('introScreen');
+        const guiltScreen = document.getElementById('guiltScreen');
+        const instructionsScreen = document.getElementById('instructionsScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        const winScreen = document.getElementById('winScreen');
+        const loseScreen = document.getElementById('loseScreen');
+        const basketEl = document.getElementById('basket');
+        const gameCanvas = document.querySelector('.game-canvas');
+
+        // Button Event Listeners
+        document.getElementById('yesBtn').addEventListener('click', showInstructions);
+        document.getElementById('noBtn').addEventListener('click', showGuiltScreen);
+        document.getElementById('instructionsScreen').addEventListener('click', startGame);
+        document.querySelector('.guilt-button').addEventListener('click', showInstructions);
+        document.getElementById('retryBtn').addEventListener('click', resetGame);
+        document.getElementById('quitBtn').addEventListener('click', showIntro);
+        document.getElementById('retryLoseBtn').addEventListener('click', resetGame);
+        document.getElementById('quitLoseBtn').addEventListener('click', showIntro);
+
+        // Touch event listeners
+        document.addEventListener('touchstart', handleTouchStart, false);
+        document.addEventListener('touchmove', handleTouchMove, false);
+        document.addEventListener('touchend', handleTouchEnd, false);
+
+        // Mouse movement for desktop
+        gameCanvas.addEventListener('mousemove', function(e) {
+            if (gameState === 'game') {
+                const rect = gameCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                basketX = x - BASKET_WIDTH / 2;
+                const maxX = rect.width - BASKET_WIDTH;
+                basketX = Math.max(0, Math.min(basketX, maxX));
+                basketEl.style.left = basketX + 'px';
+            }
+        });
+
+        // Touch event handlers
+        function handleTouchStart(e) {
+            if (gameState === 'game') {
+                touchStartX = e.touches[0].clientX;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (gameState === 'game' && e.touches.length > 0) {
+                const currentX = e.touches[0].clientX;
+                const deltaX = currentX - touchStartX;
+
+                basketX += deltaX;
+                const rect = gameCanvas.getBoundingClientRect();
+                const maxX = rect.width - BASKET_WIDTH;
+                basketX = Math.max(0, Math.min(basketX, maxX));
+                basketEl.style.left = basketX + 'px';
+
+                touchStartX = currentX;
+                e.preventDefault();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            // Extra logic if needed later
+        }
+
+        // Screen Navigation Functions
+        function showIntro() {
+            hideAllScreens();
+            introScreen.style.display = 'flex';
+            gameState = 'intro';
+            createIntroSparkles();
+            createBalloons();
+        }
+
+        function showGuiltScreen() {
+            hideAllScreens();
+            guiltScreen.style.display = 'flex';
+            gameState = 'guilt';
+        }
+
+        function showInstructions() {
+            hideAllScreens();
+            instructionsScreen.style.display = 'flex';
+            gameState = 'instructions';
+        }
+
+        function startGame() {
+            hideAllScreens();
+            gameContainer.style.display = 'block';
+            gameState = 'game';
+            gameRunning = true;
+
+            // Reset game state
+            const rect = gameCanvas.getBoundingClientRect();
+            basket = { x: rect.width / 2 - BASKET_WIDTH / 2, y: rect.height - BASKET_HEIGHT - 40 };
+            basketX = basket.x;
+            basketEl.style.left = basketX + 'px';
+            basketEl.style.top = basket.y + 'px';
+
+            fallingObjects = [];
+            flowerscaught = 0;
+            gameStartTime = Date.now();
+            spawnTimer = 0;
+
+            gameLoop();
+        }
+
+        function resetGame() {
+            fallingObjects.forEach(o => {
+                if (o.element && o.element.parentNode === gameCanvas) {
+                    gameCanvas.removeChild(o.element);
+                }
+            });
+            fallingObjects = [];
+            flowerscaught = 0;
+            gameStartTime = Date.now();
+            spawnTimer = 0;
+            gameRunning = true;
+            showInstructions();
+        }
+
+        function hideAllScreens() {
+            introScreen.style.display = 'none';
+            guiltScreen.style.display = 'none';
+            instructionsScreen.style.display = 'none';
+            gameContainer.style.display = 'none';
+            winScreen.style.display = 'none';
+            loseScreen.style.display = 'none';
+            const s = document.querySelector('.intro-sparkles');
+            if (s) s.innerHTML = '';
+            const b = document.getElementById('balloonsContainer');
+            if (b) b.innerHTML = '';
+        }
+
+        function createIntroSparkles() {
+            const wrapper = document.querySelector('.intro-sparkles');
+            if (!wrapper) return;
+            wrapper.innerHTML = '';
+            const count = 8;
+            for (let i = 0; i < count; i++) {
+                const d = document.createElement('div');
+                d.className = 'intro-sparkle';
+                const left = Math.random() * 80 + 10;
+                d.style.left = left + '%';
+                d.style.top = (40 + Math.random() * 80) + 'px';
+                const delay = Math.random() * 2;
+                d.style.animationDelay = delay + 's';
+                d.style.opacity = 0;
+                wrapper.appendChild(d);
+            }
+        }
+
+        function createBalloons() {
+            const container = document.getElementById('balloonsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            const colors = ['balloon-red', 'balloon-pink', 'balloon-yellow', 'balloon-purple'];
+            const count = 6;
+
+            for (let i = 0; i < count; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = `balloon ${colors[i % colors.length]}`;
+                const leftPos = Math.random() * 90 + 5;
+                balloon.style.left = leftPos + '%';
+                const delay = Math.random() * 3;
+                balloon.style.animationDelay = delay + 's';
+                balloon.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+                container.appendChild(balloon);
+            }
+        }
+
+        // Snack messages
+        const snackMessages = [
+            "You're my favorite distraction 💕",
+            "Catch more? I made this for YOU 🥰",
+            "My monster deserves all the roses! 🌹",
+            "One more... for me? 😘"
+        ];
+
+        function updateHUD() {
+            if (!gameStartTime) return;
+            const elapsed = Math.max(0, (Date.now() - gameStartTime) / 1000);
+            const timeLeft = Math.max(0, GAME_TIME - elapsed);
+            document.getElementById('timeDisplay').textContent = `Time: ${Math.ceil(timeLeft)}s`;
+            document.getElementById('scoreDisplay').textContent = `Roses: ${flowerscaught}/15`;
+
+            if (timeLeft <= 0) {
+                if (flowerscaught >= FLOWER_TARGET) showWinScreen();
+                else showLoseScreen('Time up! Need 15 roses. 💔');
+            }
+        }
+
+        function spawnObject() {
+            const types = [
+                {type: OBJECT_FLOWER, weight: 0.8},
+                {type: OBJECT_BOMB, weight: 0.1},
+                {type: OBJECT_GIRL, weight: 0.05},
+                {type: OBJECT_SNACK, weight: 0.05}
+            ];
+            let rand = Math.random();
+            let selected = OBJECT_FLOWER;
+            for (let obj of types) {
+                if (rand < obj.weight) { selected = obj.type; break; }
+                rand -= obj.weight;
+            }
+
+            const obj = document.createElement('div');
+            obj.className = `falling-object ${selected}`;
+            const rect = gameCanvas.getBoundingClientRect();
+            obj.style.left = Math.random() * (rect.width - 60) + 'px';
+            obj.style.top = '-60px';
+            gameCanvas.appendChild(obj);
+
+            fallingObjects.push({
+                element: obj,
+                type: selected,
+                speed: 4 + Math.random() * 3,
+                y: -60
+            });
+        }
+
+        function checkCollision(obj) {
+            const rect = gameCanvas.getBoundingClientRect();
+            const basketRect = {
+                left: basketX,
+                right: basketX + BASKET_WIDTH,
+                top: rect.height - BASKET_HEIGHT - 50,
+                bottom: rect.height - 40
+            };
+            const left = parseFloat(obj.element.style.left);
+           const size = (obj.type === OBJECT_GIRL) ? 60 : 40; 
+            const objRect = {
+                left: left,
+                right: left + size,
+                top: obj.y,
+                bottom: obj.y + size
+            };
+            return !(
+                objRect.bottom < basketRect.top ||
+                objRect.top > basketRect.bottom ||
+                objRect.right < basketRect.left ||
+                objRect.left > basketRect.right
+            );
+        }
+
+        function showSnackMessage(msg) {
+            const container = document.getElementById('snackMessageContainer');
+            container.innerHTML = `<div class="snack-message"><p>${msg}</p></div>`;
+            setTimeout(() => container.innerHTML = '', SNACK_MESSAGE_DURATION);
+        }
+
+        function showWinScreen() {
+            gameRunning = false;
+            document.getElementById('winMessage').textContent =
+                'You collected enough love! I love you forever, my monster! 🌹💕';
+            hideAllScreens();
+            winScreen.style.display = 'flex';
+        }
+
+        function showLoseScreen(reason) {
+            gameRunning = false;
+            document.getElementById('loseTitle').textContent = 'Oops! 💥';
+            document.getElementById('loseMessage').textContent = reason || 'Try again for me? 🥺';
+            hideAllScreens();
+            loseScreen.style.display = 'flex';
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                const obj = fallingObjects[i];
+                obj.y += obj.speed;
+                obj.element.style.top = obj.y + 'px';
+
+                const rect = gameCanvas.getBoundingClientRect();
+                if (obj.y > rect.height) {
+                    if (obj.element.parentNode === gameCanvas) {
+                        gameCanvas.removeChild(obj.element);
+                    }
+                    fallingObjects.splice(i, 1);
+                    continue;
+                }
+
+                if (checkCollision(obj)) {
+                    if (obj.element.parentNode === gameCanvas) {
+                        gameCanvas.removeChild(obj.element);
+                    }
+                    fallingObjects.splice(i, 1);
+
+                    if (obj.type === OBJECT_FLOWER) {
+                        flowerscaught++;
+                    } else if (obj.type === OBJECT_SNACK) {
+                        const msg = snackMessages[Math.floor(Math.random() * snackMessages.length)];
+                        showSnackMessage(msg);
+                    } else {
+                        let reason = obj.type === OBJECT_BOMB
+                            ? 'Boom! My roses exploded 😭'
+                            : 'Jealous! Doll over me? 💔';
+                        showLoseScreen(reason);
+                        return;
+                    }
+                }
+            }
+
+            updateHUD();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            updateGame();
+            spawnTimer += 16;
+            if (spawnTimer > SPAWN_INTERVAL) {
+                spawnObject();
+                spawnTimer = 0;
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resizeGame() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            gameCanvas.style.width = width + 'px';
+            gameCanvas.style.height = height + 'px';
+        }
+        window.addEventListener('resize', resizeGame);
+
+        resizeGame();
+        showIntro();
+    </script>
+</body>
+</html>
